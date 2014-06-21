@@ -454,6 +454,7 @@ func (s3 *S3) prepare(req *request) error {
 	if err != nil {
 		return fmt.Errorf("bad S3 endpoint URL %q: %v", req.baseurl, err)
 	}
+	req.signpath = (&url.URL{Path: req.signpath}).String()
 	req.headers["Host"] = []string{u.Host}
 	req.headers["Date"] = []string{time.Now().In(time.UTC).Format(time.RFC1123)}
 	sign(s3.Auth, req.method, req.signpath, req.params, req.headers)

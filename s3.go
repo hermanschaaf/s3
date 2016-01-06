@@ -23,7 +23,7 @@ import (
 	"strings"
 	"time"
 
-	"launchpad.net/goamz/aws"
+	"github.com/goamz/goamz/aws"
 )
 
 const debug = false

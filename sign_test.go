@@ -1,14 +1,14 @@
 package s3_test
 
 import (
-	"launchpad.net/goamz/aws"
-	"launchpad.net/goamz/s3"
-	. "launchpad.net/gocheck"
+	. "github.com/gengo/s3"
+	"github.com/goamz/goamz/aws"
+	. "gopkg.in/check.v1"
 )
 
 // S3 ReST authentication docs: http://goo.gl/G1LrK
 
-var testAuth = aws.Auth{"0PN5J17HBGZHT7JJ3X82", "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o"}
+var testAuth = aws.Auth{AccessKey: "0PN5J17HBGZHT7JJ3X82", SecretKey: "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o"}
 
 func (s *S) TestSignExampleObjectGet(c *C) {
 	method := "GET"
@@ -17,7 +17,7 @@ func (s *S) TestSignExampleObjectGet(c *C) {
 		"Host": {"johnsmith.s3.amazonaws.com"},
 		"Date": {"Tue, 27 Mar 2007 19:36:42 +0000"},
 	}
-	s3.Sign(testAuth, method, path, nil, headers)
+	Sign(testAuth, method, path, nil, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:xXjDGYUmKxnwqr5KXNPGldn5LbA="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -31,7 +31,7 @@ func (s *S) TestSignExampleObjectPut(c *C) {
 		"Content-Type":   {"image/jpeg"},
 		"Content-Length": {"94328"},
 	}
-	s3.Sign(testAuth, method, path, nil, headers)
+	Sign(testAuth, method, path, nil, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:hcicpDDvL9SsO6AkvxqmIWkmOuQ="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -49,7 +49,7 @@ func (s *S) TestSignExampleList(c *C) {
 		"Date":       {"Tue, 27 Mar 2007 19:42:41 +0000"},
 		"User-Agent": {"Mozilla/5.0"},
 	}
-	s3.Sign(testAuth, method, path, params, headers)
+	Sign(testAuth, method, path, params, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:jsRt/rhG+Vtp88HrYL706QhE4w4="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -64,7 +64,7 @@ func (s *S) TestSignExampleFetch(c *C) {
 		"Host": {"johnsmith.s3.amazonaws.com"},
 		"Date": {"Tue, 27 Mar 2007 19:44:46 +0000"},
 	}
-	s3.Sign(testAuth, method, path, params, headers)
+	Sign(testAuth, method, path, params, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:thdUi9VAkzhkniLj96JIrOPGi0g="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -79,7 +79,7 @@ func (s *S) TestSignExampleDelete(c *C) {
 		"User-Agent": {"dotnet"},
 		"x-amz-date": {"Tue, 27 Mar 2007 21:20:26 +0000"},
 	}
-	s3.Sign(testAuth, method, path, params, headers)
+	Sign(testAuth, method, path, params, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:k3nL7gH3+PadhTEVn5Ip83xlYzk="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -102,7 +102,7 @@ func (s *S) TestSignExampleUpload(c *C) {
 		"Content-Encoding":             {"gzip"},
 		"Content-Length":               {"5913339"},
 	}
-	s3.Sign(testAuth, method, path, params, headers)
+	Sign(testAuth, method, path, params, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:C0FlOtU8Ylb9KDTpZqYkZPX91iI="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -114,7 +114,7 @@ func (s *S) TestSignExampleListAllMyBuckets(c *C) {
 		"Host": {"s3.amazonaws.com"},
 		"Date": {"Wed, 28 Mar 2007 01:29:59 +0000"},
 	}
-	s3.Sign(testAuth, method, path, nil, headers)
+	Sign(testAuth, method, path, nil, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:Db+gepJSUbZKwpx1FR0DLtEYoZA="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }
@@ -126,7 +126,7 @@ func (s *S) TestSignExampleUnicodeKeys(c *C) {
 		"Host": {"s3.amazonaws.com"},
 		"Date": {"Wed, 28 Mar 2007 01:49:49 +0000"},
 	}
-	s3.Sign(testAuth, method, path, nil, headers)
+	Sign(testAuth, method, path, nil, headers)
 	expected := "AWS 0PN5J17HBGZHT7JJ3X82:dxhSBHoI6eVSPcXJqEghlUzZMnY="
 	c.Assert(headers["Authorization"], DeepEquals, []string{expected})
 }

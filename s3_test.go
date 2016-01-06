@@ -7,10 +7,11 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/go-check/check"
+	. "github.com/gengo/s3"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
 	"github.com/goamz/goamz/testutil"
+	. "gopkg.in/check.v1"
 )
 
 func Test(t *testing.T) {
@@ -27,13 +28,12 @@ var testServer = testutil.NewHTTPServer()
 
 func (s *S) SetUpSuite(c *C) {
 	testServer.Start()
-	auth := aws.Auth{"abc", "123"}
+	auth := aws.Auth{AccessKey: "abc", SecretKey: "123"}
 	s.s3 = s3.New(auth, aws.Region{Name: "faux-region-1", S3Endpoint: testServer.URL})
 }
 
 func (s *S) TearDownSuite(c *C) {
-	s3.SetAttemptStrategy(nil)
-	testServer.Stop()
+	SetAttemptStrategy(nil)
 }
 
 func (s *S) SetUpTest(c *C) {
@@ -41,7 +41,7 @@ func (s *S) SetUpTest(c *C) {
 		Total: 300 * time.Millisecond,
 		Delay: 100 * time.Millisecond,
 	}
-	s3.SetAttemptStrategy(&attempts)
+	SetAttemptStrategy(&attempts)
 }
 
 func (s *S) TearDownTest(c *C) {
@@ -160,7 +160,7 @@ func (s *S) TestPutObject(c *C) {
 	testServer.Response(200, nil, "")
 
 	b := s.s3.Bucket("bucket")
-	err := b.Put("名字", []byte("content"), "content-type", s3.Private)
+	err := b.Put("名字", []byte("content"), "content-type", s3.Private, s3.Options{})
 	c.Assert(err, IsNil)
 
 	req := testServer.WaitRequest()
@@ -178,7 +178,7 @@ func (s *S) TestPutReader(c *C) {
 
 	b := s.s3.Bucket("bucket")
 	buf := bytes.NewBufferString("content")
-	err := b.PutReader("name", buf, int64(buf.Len()), "content-type", s3.Private)
+	err := b.PutReader("name", buf, int64(buf.Len()), "content-type", s3.Private, s3.Options{})
 	c.Assert(err, IsNil)
 
 	req := testServer.WaitRequest()
@@ -274,10 +274,10 @@ func (s *S) TestListWithDelimiter(c *C) {
 }
 
 func (s *S) TestRetryAttempts(c *C) {
-	s3.SetAttemptStrategy(nil)
-	orig := s3.AttemptStrategy()
-	s3.RetryAttempts(false)
-	c.Assert(s3.AttemptStrategy(), Equals, aws.AttemptStrategy{})
-	s3.RetryAttempts(true)
-	c.Assert(s3.AttemptStrategy(), Equals, orig)
+	SetAttemptStrategy(nil)
+	orig := AttemptStrategy()
+	RetryAttempts(false)
+	c.Assert(AttemptStrategy(), Equals, aws.AttemptStrategy{})
+	RetryAttempts(true)
+	c.Assert(AttemptStrategy(), Equals, orig)
 }

@@ -11,10 +11,11 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/go-check/check"
+	. "github.com/gengo/s3"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
 	"github.com/goamz/goamz/testutil"
+	. "gopkg.in/check.v1"
 )
 
 // AmazonServer represents an Amazon S3 server.
@@ -169,7 +170,7 @@ func (s *ClientTests) TestBasicFunctionality(c *C) {
 	err := b.PutBucket(s3.PublicRead)
 	c.Assert(err, IsNil)
 
-	err = b.Put("name", []byte("yo!"), "text/plain", s3.PublicRead)
+	err = b.Put("name", []byte("yo!"), "text/plain", s3.PublicRead, s3.Options{})
 	c.Assert(err, IsNil)
 	defer b.Del("name")
 
@@ -182,7 +183,7 @@ func (s *ClientTests) TestBasicFunctionality(c *C) {
 	c.Assert(string(data), Equals, "yo!")
 
 	buf := bytes.NewBufferString("hey!")
-	err = b.PutReader("name2", buf, int64(buf.Len()), "text/plain", s3.Private)
+	err = b.PutReader("name2", buf, int64(buf.Len()), "text/plain", s3.Private, s3.Options{})
 	c.Assert(err, IsNil)
 	defer b.Del("name2")
 
@@ -371,7 +372,7 @@ func (s *ClientTests) TestBucketList(c *C) {
 	objData := make(map[string][]byte)
 	for i, path := range objectNames {
 		data := []byte(strings.Repeat("a", i))
-		err := b.Put(path, data, "text/plain", s3.Private)
+		err := b.Put(path, data, "text/plain", s3.Private, s3.Options{})
 		c.Assert(err, IsNil)
 		defer b.Del(path)
 		objData[path] = data
@@ -426,7 +427,7 @@ func (s *ClientTests) TestMultiInitPutList(c *C) {
 		sent = append(sent, p)
 	}
 
-	s3.SetListPartsMax(2)
+	SetListPartsMax(2)
 
 	parts, err := multi.ListParts()
 	c.Assert(err, IsNil)

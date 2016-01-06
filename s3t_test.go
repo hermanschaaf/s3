@@ -1,10 +1,10 @@
 package s3_test
 
 import (
-	. "github.com/go-check/check"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
 	"github.com/goamz/goamz/s3/s3test"
+	. "gopkg.in/check.v1"
 )
 
 type LocalServer struct {

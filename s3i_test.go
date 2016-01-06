@@ -5,16 +5,16 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
-	"net/http"
-	"strings"
-
-	"launchpad.net/goamz/aws"
-	"launchpad.net/goamz/s3"
-	"launchpad.net/goamz/testutil"
-	. "launchpad.net/gocheck"
 	"net"
+	"net/http"
 	"sort"
+	"strings"
 	"time"
+
+	. "github.com/go-check/check"
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
+	"github.com/goamz/goamz/testutil"
 )
 
 // AmazonServer represents an Amazon S3 server.

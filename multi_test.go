@@ -4,9 +4,10 @@ import (
 	"encoding/xml"
 	"io"
 	"io/ioutil"
-	"launchpad.net/goamz/s3"
-	. "launchpad.net/gocheck"
 	"strings"
+
+	. "github.com/go-check/check"
+	"github.com/goamz/goamz/s3"
 )
 
 func (s *S) TestInitMulti(c *C) {
